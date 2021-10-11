@@ -1,0 +1,86 @@
+---
+- name: Learn jmesquery
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+
+  tasks:
+
+    - name: Basic Expressions 'a'
+      debug:
+        msg:
+          - "The var:         example_01: {{ example_01 }}" 
+          - "The expression:  {{ '{{' }} example_01 | json_query(jmesquery) {{ '}}' }}"
+          - "The jmesquery:   jmesquery: 'a' "
+          - "The result:      {{ example_01 | json_query(jmesquery) }} "
+      vars:
+        example_01: {"a": "foo", "b": "bar", "c": "baz"}
+        jmesquery: 'a'
+
+    - name: Basic Expressions 'a.b.c.d'
+      debug:
+        msg:
+          - "The var:         example_02: {{ example_02 }}" 
+          - "The expression:  {{ '{{' }} example_02 | json_query(jmesquery) {{ '}}' }}"
+          - "The jmesquery:   jmesquery: 'a.b.c.d' "
+          - "The result:      {{ example_02 | json_query(jmesquery) }}"
+      vars:
+        example_02: {"a": {"b": {"c": {"d": "value"}}}}
+        jmesquery: 'a.b.c.d'
+
+
+    - name: Basic Expressions Index Expression '[1]'
+      debug:
+        msg:
+          - 'The var:         example_03: ["a", "b", "c", "d", "e", "f"]'
+          - "The expression:  {{ '{{' }} example_03 | json_query(jmesquery) {{ '}}' }}"
+          - "The jmesquery:   jmesquery: '[1]'"
+          - "The result:      {{ example_03 | json_query(jmesquery) }}"
+          - "{{ example_03 | json_query('[1]') }}"
+      vars:
+        example_03: ["a", "b", "c", "d", "e", "f"]
+        jmesquery: '[1]'
+
+
+
+
+#    - name: Generate in-memory inventory via compose orchestration
+#      debug:
+#        msg:
+#          - "name: {{ __container.Names[0] | regex_replace('\/', '') }}"
+#          - "Ports: {{ __container.Ports }}" 
+#          - "ssh Port: {{ __container | json_query(jmesquery) }}" 
+#            #- "ssh Pors: {{ __container.Ports | json_query(jmesquery) }}" 
+#      loop: "{{ containers }}"
+#      loop_control:
+#        label: container # "{{ __container.Names[0] | regex_replace('\/', '') }}"
+#        loop_var: __container
+#      vars:
+#        jmesquery: 'Ports[?PrivatePort == "22"]'
+
+#    shortname:                "{{ __container.Names[0] | regex_replace('\/', '') }}"
+#    mac_ansible_ssh_host:     localhost
+#    linux_ansible_ssh_host:   "{{ __container.NetworkSettings.Networks[networks.default.name].IPAddress }}"
+##    group:                   "{{ __container.__envy_container.group | default('unassigned') }}"
+#    ansible_ssh_port:         "{{ __container.Ports[PrivatePort['22/tcp']].PublicPort }}"
+#    - name: Extract Names
+#      debug:
+#        f_container1: "{{ services | json_query(jmesquery) | unique }}"
+#      vars:
+#        jmesquery: '*.image'
+
+          #
+          #
+          #
+#          
+#    - name: Output images
+#      debug:
+#        var: item
+#      loop: "{{ f_envy_images }}"
+#
+#    - name: Extract name and ports
+#      debug:
+#        msg: "name and port: {{ services | json_query(jmesquery) }}"
+#      vars:
+#        jmesquery: '*.[container_name, ports]'    
