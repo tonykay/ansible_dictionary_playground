@@ -11,6 +11,9 @@
       debug:
         msg:
           - "Tutorial Home Page: https://jmespath.org/tutorial.html"
+          - "Early examples use a simple `json_query(expression)`"
+          - "Later examples use a simple `json_query(jmesquery)` syntax with the expression being a var"
+
 
     - name: "Example 1 returning the value of 'a' Expression:  {{ '{{' }} example_01 | community.general.json_query('a') {{ '}}' }}"
       debug:
@@ -25,25 +28,20 @@
       debug:
         msg:
           - "The var:         example_02: {{ example_02 }}" 
-          - "The expression:  {{ '{{' }} example_02 | community.general.json_query(jmesquery) {{ '}}' }}"
-          - "The jmesquery:   jmesquery: 'a.b.c.d' "
-          - "The result:      {{ example_02 | community.general.json_query(jmesquery) }}"
+          - "The expression:  {{ '{{' }} example_02 | community.general.json_query('a.b.c.d') {{ '}}' }}"
+          - "The result:      {{ example_02 | community.general.json_query('a.b.c.d') }}"
       vars:
         example_02: {"a": {"b": {"c": {"d": "value"}}}}
-        jmesquery: 'a.b.c.d'
 
 
     - name: Basic Expressions Index Expression '[1]'
       debug:
         msg:
           - 'The var:         example_03: ["a", "b", "c", "d", "e", "f"]'
-          - "The expression:  {{ '{{' }} example_03 | community.general.json_query(jmesquery) {{ '}}' }}"
-          - "The jmesquery:   jmesquery: '[1]'"
-          - "The result:      {{ example_03 | community.general.json_query(jmesquery) }}"
-          - "{{ example_03 | community.general.json_query('[1]') }}"
+          - "The expression:  {{ '{{' }} example_03 | community.general.json_query('[1]') {{ '}}' }}"
+          - "The result:      {{ example_03 | community.general.json_query('[1]') }}"
       vars:
         example_03: ["a", "b", "c", "d", "e", "f"]
-        jmesquery: '[1]'
 
 
 
