@@ -1,5 +1,5 @@
 ---
-- name: The JMESPATH Tutorial with Ansible andcommunity.general.json_query
+- name: The JMESPATH Tutorial with Ansible and community.general.json_query
   hosts: localhost
   connection: local
   gather_facts: false
@@ -7,17 +7,17 @@
 
   tasks:
 
-    - name: A simple playbook showing the JMESPATH Tutorial in Ansible withcommunity.general.json_query
+    - name: A simple playbook showing the JMESPATH Tutorial in Ansible with community.general.json_query
       debug:
         msg:
           - "Tutorial Home Page: https://jmespath.org/tutorial.html"
 
-    - name: "Example 1 returning the value of 'a' Expression:  {{ '{{' }} example_01 |community.general.json_query('a') {{ '}}' }}"
+    - name: "Example 1 returning the value of 'a' Expression:  {{ '{{' }} example_01 | community.general.json_query('a') {{ '}}' }}"
       debug:
         msg:
           - "The var:         example_01: {{ example_01 }}" 
-          - "The expression:  {{ '{{' }} example_01 |community.general.json_query('a') {{ '}}' }}"
-          - "The result:      {{ example_01 |community.general.json_query('a') }}"
+          - "The expression:  {{ '{{' }} example_01 | community.general.json_query('a') {{ '}}' }}"
+          - "The result:      {{ example_01 | community.general.json_query('a') }}"
       vars:
         example_01: {"a": "foo", "b": "bar", "c": "baz"}
 
@@ -25,9 +25,9 @@
       debug:
         msg:
           - "The var:         example_02: {{ example_02 }}" 
-          - "The expression:  {{ '{{' }} example_02 |community.general.json_query(jmesquery) {{ '}}' }}"
+          - "The expression:  {{ '{{' }} example_02 | community.general.json_query(jmesquery) {{ '}}' }}"
           - "The jmesquery:   jmesquery: 'a.b.c.d' "
-          - "The result:      {{ example_02 |community.general.json_query(jmesquery) }}"
+          - "The result:      {{ example_02 | community.general.json_query(jmesquery) }}"
       vars:
         example_02: {"a": {"b": {"c": {"d": "value"}}}}
         jmesquery: 'a.b.c.d'
@@ -37,10 +37,10 @@
       debug:
         msg:
           - 'The var:         example_03: ["a", "b", "c", "d", "e", "f"]'
-          - "The expression:  {{ '{{' }} example_03 |community.general.json_query(jmesquery) {{ '}}' }}"
+          - "The expression:  {{ '{{' }} example_03 | community.general.json_query(jmesquery) {{ '}}' }}"
           - "The jmesquery:   jmesquery: '[1]'"
-          - "The result:      {{ example_03 |community.general.json_query(jmesquery) }}"
-          - "{{ example_03 |community.general.json_query('[1]') }}"
+          - "The result:      {{ example_03 | community.general.json_query(jmesquery) }}"
+          - "{{ example_03 | community.general.json_query('[1]') }}"
       vars:
         example_03: ["a", "b", "c", "d", "e", "f"]
         jmesquery: '[1]'
@@ -53,8 +53,8 @@
 #        msg:
 #          - "name: {{ __container.Names[0] | regex_replace('\/', '') }}"
 #          - "Ports: {{ __container.Ports }}" 
-#          - "ssh Port: {{ __container |community.general.json_query(jmesquery) }}" 
-#            #- "ssh Pors: {{ __container.Ports |community.general.json_query(jmesquery) }}" 
+#          - "ssh Port: {{ __container | community.general.json_query(jmesquery) }}" 
+#            #- "ssh Pors: {{ __container.Ports | community.general.json_query(jmesquery) }}" 
 #      loop: "{{ containers }}"
 #      loop_control:
 #        label: container # "{{ __container.Names[0] | regex_replace('\/', '') }}"
@@ -69,7 +69,7 @@
 #    ansible_ssh_port:         "{{ __container.Ports[PrivatePort['22/tcp']].PublicPort }}"
 #    - name: Extract Names
 #      debug:
-#        f_container1: "{{ services |community.general.json_query(jmesquery) | unique }}"
+#        f_container1: "{{ services | community.general.json_query(jmesquery) | unique }}"
 #      vars:
 #        jmesquery: '*.image'
 
@@ -84,6 +84,6 @@
 #
 #    - name: Extract name and ports
 #      debug:
-#        msg: "name and port: {{ services |community.general.json_query(jmesquery) }}"
+#        msg: "name and port: {{ services | community.general.json_query(jmesquery) }}"
 #      vars:
 #        jmesquery: '*.[container_name, ports]'    
