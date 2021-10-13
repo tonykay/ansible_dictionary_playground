@@ -1,0 +1,186 @@
+---
+- name: Working with dictionaries and dereferencing
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  vars:
+    servers:
+
+      - name: frontend
+        description: Loadbalancer or publically exposed front end
+        cpu: arm
+        networks:
+          - public
+          - dmz
+
+      - name: app
+        description: App Server(s) for flask
+        count: 2
+        cpu: x86
+
+      - name: cache
+        description: Cache servers
+        count: 2
+        cpu: arm
+
+      - name: database
+        description: Backend database
+        count: 1
+        cpu: x86
+
+  tasks:
+
+
+    - name: Select elements of server_list with subscripting (position in list)
+      debug:
+       msg: 
+         - Select first item in server_list
+         - "{{ servers[0] }}"
+         - "{{ servers| community.general.json_query('[0]') }}"
+         - ""
+         - Select last item in server_list
+         - "{{ servers| community.general.json_query('[-1]') }}"
+         - "{{ servers[-1] }}"
+         - "{{ servers | selectattr('name', 'equalto', 'frontend') }}"
+         - "{{ servers | selectattr('name', 'equalto', 'frontend') | map(attribute='cpu') }}"
+
+    - name: Sum server counts of server_list 
+      debug:
+       msg: 
+         - "{{ servers | selectattr('count','defined') | map(attribute='count') | list | sum }}"
+
+    - name: Sum server counts of server_list 
+      debug:
+       msg:  
+         - "{{ servers | selectattr('cpu', 'equalto', 'x86') | selectattr('count','defined') | map(attribute='count') | list | sum }}"
+
+    - name: Sum server counts of server_list 
+      debug:
+       msg: >-  
+         {{  servers 
+           | selectattr('cpu', 'equalto', 'x86') 
+           | selectattr('count','defined') 
+           | map(attribute='count') 
+           | list 
+           | sum 
+         }}
+
+
+#
+#      
+#
+#     - name: Output the servers dictionary
+#       debug:
+#         var: servers
+#         verbosity: 1
+#
+#     - name: "Simple query selecting by key-value pair name: 'app'"
+#       debug:
+#         var: servers | community.general.json_query("[? name == 'app']")
+#
+#     - name: "Simple query selecting by key-value pair name: 'app'"
+#       debug:
+#         var: servers | community.general.json_query(jmesquery)
+#       vars:
+#         jmesquery: "[? name == 'app']" 
+#
+#     - name: "Simple query selecting by key-value pair name: 'app' using a var"
+#       debug:
+#         var: "servers | community.general.json_query('[? name == `{{ server_type }}`]')"
+#       vars:
+#         server_type: app
+#
+#     - name: Search a dictionary looking for all 
+#       debug:
+#         var: "servers | community.general.json_query('[*].cpu')"
+#
+#     - name: Search a dictionary looking for all 
+#       debug:
+#         var: "servers | community.general.json_query('[*].cpu == `arm`')"
+#
+#     - name: Search a dictionary looking for all 
+#       debug:
+#         var: "servers | community.general.json_query('[? cpu == `{{ cpu_type }}`]')"
+#       vars:
+#         cpu_type: arm
+#           
+##     - name: Simple debug server dictionary
+##       debug:
+##         var: servers | json_query(jmesquery)
+##       vars:
+##         jmesquery: foo
+##
+##     - name: Simple debug server dictionary
+##       debug:
+##         var: servers | json_query(jmesquery)
+##       vars:
+##         jmesquery: 'cpu == "arm"'
+##
+##     - name: Simple debug server dictionary
+##       debug:
+##         var: servers | json_query(jmesquery)
+##       vars:
+##         jmesquery: '*[? cpu == "arm"]'
+##
+##     - name: Simple debug server dictionary
+##       debug:
+##         var: servers | json_query('[*]')
+##
+##     - name: Simple debug server dictionary
+##       debug:
+##         var: servers | json_query('[? cpu == "arm"]')
+##           # var: servers | json_query('[*].cpu')
+##           #var: servers | json_query('[*][?cpu=="arm"]')
+##           #var: servers | json_query(jmesquery)
+##           #var: servers | json_query('*[? cpu == "arm"]')
+##
+##     - name: Simple debug server dictionary
+##       debug:
+##         var: servers | json_query('[?cpu=="arm"].cpu')
+##       vars:
+##         jmesquery: '*[? cpu == "arm"]'
+#
+##    - name: Read in dataset
+##      include_vars: 
+##        file: docker_host_info_example.json
+##
+##    - name: Generate in-memory inventory via compose orchestration
+##      debug:
+##        msg:
+##          - "name: {{ __container.Names[0] | regex_replace('\/', '') }}"
+##          - "Ports: {{ __container.Ports }}" 
+##          - "ssh Port: {{ __container | json_query(jmesquery) }}" 
+##            #- "ssh Pors: {{ __container.Ports | json_query(jmesquery) }}" 
+##      loop: "{{ containers }}"
+##      loop_control:
+##        label: container # "{{ __container.Names[0] | regex_replace('\/', '') }}"
+##        loop_var: __container
+##      vars:
+##        jmesquery: 'Ports[?PrivatePort == "22"]'
+##
+##    shortname:                "{{ __container.Names[0] | regex_replace('\/', '') }}"
+##    mac_ansible_ssh_host:     localhost
+##    linux_ansible_ssh_host:   "{{ __container.NetworkSettings.Networks[networks.default.name].IPAddress }}"
+###    group:                   "{{ __container.__envy_container.group | default('unassigned') }}"
+##    ansible_ssh_port:         "{{ __container.Ports[PrivatePort['22/tcp']].PublicPort }}"
+##    - name: Extract Names
+##      debug:
+##        f_container1: "{{ services | json_query(jmesquery) | unique }}"
+##      vars:
+##        jmesquery: '*.image'
+#
+#          #
+#          #
+#          #
+##          
+##    - name: Output images
+##      debug:
+##        var: item
+##      loop: "{{ f_envy_images }}"
+##
+##    - name: Extract name and ports
+##      debug:
+##        msg: "name and port: {{ services | json_query(jmesquery) }}"
+##      vars:
+##        jmesquery: '*.[container_name, ports]'    
