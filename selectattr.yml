@@ -31,40 +31,64 @@
 
   tasks:
 
-
-    - name: Select elements of server_list with subscripting (position in list)
+    - name: Select elements of server with subscripting (position in list)
       debug:
        msg: 
-         - Select first item in server_list
+         - Select first item in server
          - "{{ servers[0] }}"
          - "{{ servers| community.general.json_query('[0]') }}"
          - ""
-         - Select last item in server_list
+         - Select last item in server
          - "{{ servers| community.general.json_query('[-1]') }}"
          - "{{ servers[-1] }}"
          - "{{ servers | selectattr('name', 'equalto', 'frontend') }}"
          - "{{ servers | selectattr('name', 'equalto', 'frontend') | map(attribute='cpu') }}"
 
-    - name: Sum server counts of server_list 
+    - name: Sum server counts of server 
       debug:
        msg: 
          - "{{ servers | selectattr('count','defined') | map(attribute='count') | list | sum }}"
 
-    - name: Sum server counts of server_list 
+    - name: Sum server counts of server 
       debug:
-       msg:  
-         - "{{ servers | selectattr('cpu', 'equalto', 'x86') | selectattr('count','defined') | map(attribute='count') | list | sum }}"
+        msg:  
+          - "{{ servers | selectattr('cpu', 'equalto', 'x86') | selectattr('count','defined') | map(attribute='count') | list | sum }}"
 
-    - name: Sum server counts of server_list 
+    - name: Sum server counts of server 
       debug:
-       msg: >-  
+        msg: >-  
          {{  servers 
-           | selectattr('cpu', 'equalto', 'x86') 
+           | selectattr('cpu', 'equalto', cpu_type) 
            | selectattr('count','defined') 
            | map(attribute='count') 
            | list 
            | sum 
          }}
+      vars:
+        cpu_type: x86
+
+    - name: Sum server counts of server 
+      debug:
+        msg: >-  
+         {{  servers | selectattr('cpu', 'equalto', cpu_type) 
+             | selectattr('count','defined') 
+             | map(attribute='count') | list | sum 
+         }}
+      vars:
+        cpu_type: x86
+
+    - name: Create a selectattr logical OR with union
+      debug:
+        msg: >-
+          {{
+            servers | selectattr('name', 'equalto', server_name_1) | list |
+            union ( servers | selectattr('name', 'equalto', server_name_2) | list )
+          }}
+      vars:
+        server_name_1: app
+        server_name_2: frontend
+      tags:
+        - or_select
 
 
 #
