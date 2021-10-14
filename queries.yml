@@ -47,23 +47,36 @@
          - "{{ servers| community.general.json_query('[-1]') }}"
          - "{{ servers[-1] }}"
 
+    - name: Select elements of server with subscripting (position in list)
+      debug:
+       msg: 
+         - Select first item in server
+         - "{{ servers[0].cpu }}"
+           #         - "{{ servers| community.general.json_query('[0]').cpu }}"
 
     - name: Select server by the value of name
       debug:
-       msg: 
-         - "{{ servers | selectattr('name', 'equalto', 'frontend') }}"
-         - "{{ servers | selectattr('name', 'match', 'frontend') }}"
-         - "{{ servers | selectattr('name', 'search', 'frontend') }}"
+        msg: 
+          - "{{ servers | selectattr('name', 'equalto', 'frontend') }}"
+          - "{{ servers | selectattr('name', 'match', '^frontend$') }}"
+          - "{{ servers | selectattr('name', 'search', '^frontend$') }}"
+
+    - name: List all the server names
+      debug:
+        msg: 
+          - "{{ servers | map(attribute='name') | list }}"
+      tags:
+        - list_names
 
     - name: Extract value of cpu by value of name
       debug:
-       msg: 
-         - "{{ servers | selectattr('name', 'equalto', 'frontend') | map(attribute='cpu') }}"
+        msg: 
+          - "{{ servers | selectattr('name', 'equalto', 'frontend') | map(attribute='cpu') }}"
 
     - name: Sum server counts of server 
       debug:
-       msg: 
-         - "{{ servers | selectattr('count','defined') | map(attribute='count') | list | sum }}"
+        msg: 
+          - "{{ servers | selectattr('count','defined') | map(attribute='count') | list | sum }}"
 
     - name: Sum server counts by value of cpu_type
       debug:
