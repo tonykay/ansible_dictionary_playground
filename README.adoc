@@ -1,0 +1,26 @@
+== Goals
+
+
+Files
+
+* README.adoc
+* jmespath-tutorial.yml
+* queries.yml
+
+=== Dependencies
+
+This repo should work with ansible `2.9` and above.
+However here are the dependencies it was originally developed with.
+Python `3.10` is almost certainly *not* required but was used.
+
+* requirements.txt
+* requirements.yml
+
+== Resources
+
+* Original Thread (Red Hat Internal): https://chat.google.com/room/AAAAmYHFeFs/4sQz86ZPbEY
+* JMES Tutorial
+* link:https://www.0xf8.org/2021/03/filtering-with-ansibles-selectattr-rejectattr-when-the-tested-attribute-can-be-absent/[Filtering with Ansible’s selectattr()/rejectattr() when the tested attribute can be absent]
+
+
+
