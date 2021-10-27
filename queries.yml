@@ -38,21 +38,27 @@
 
     - name: Select elements of server with subscripting (position in list)
       debug:
-       msg: 
-         - Select first item in server
-         - "{{ servers[0] }}"
-         - "{{ servers| community.general.json_query('[0]') }}"
-         - ""
-         - Select last item in server
-         - "{{ servers| community.general.json_query('[-1]') }}"
-         - "{{ servers[-1] }}"
+        msg: 
+          - Select first item in server
+          - "{{ servers[0] }}"
+          - "{{ servers | first }}"
+          - "{{ servers | community.general.json_query('[0]') }}"
+          - ""
+          - Select last item in server
+          - "{{ servers[-1] }}"
+          - "{{ servers | community.general.json_query('[-1]') }}"
+      tags:
+        - subscripting
 
-    - name: Select elements of server with subscripting (position in list)
+    - name: Select attribute of a server with subscripting (position in list)
       debug:
-       msg: 
-         - Select first item in server
-         - "{{ servers[0].cpu }}"
-           #         - "{{ servers| community.general.json_query('[0]').cpu }}"
+        msg: 
+          - "{{ servers[0].cpu }}"
+          - "{{ servers | community.general.json_query('[0].cpu') }}"
+          - "{{ servers | community.general.json_query('[0]') }}"
+          - "{{ servers | community.general.json_query('[0]') | map(attribute='cpu') | list }}"
+      tags:
+        - subscript_and_value
 
     - name: Select server by the value of name
       debug:
@@ -60,6 +66,7 @@
           - "{{ servers | selectattr('name', 'equalto', 'frontend') }}"
           - "{{ servers | selectattr('name', 'match', '^frontend$') }}"
           - "{{ servers | selectattr('name', 'search', '^frontend$') }}"
+          - "{{ servers | json_query('[?name==`frontend`]') }}"
 
     - name: List all the server names
       debug:
@@ -72,6 +79,20 @@
       debug:
         msg: 
           - "{{ servers | selectattr('name', 'equalto', 'frontend') | map(attribute='cpu') }}"
+
+    - name: Reject by value of cpu 
+      debug:
+        msg: 
+          - "{{ servers | rejectattr('cpu', 'equalto', 'x86') }}"
+      tags:
+        - reject
+
+    - name: Reject by value of cpu and os
+      debug:
+        msg: 
+          - "{{ servers | rejectattr('cpu', 'equalto', 'x86') | rejectattr('os', 'equalto', 'netbsd') }}"
+      tags:
+        - reject
 
     - name: Sum server counts of server 
       debug:
